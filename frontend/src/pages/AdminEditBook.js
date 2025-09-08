@@ -52,6 +52,10 @@ const AdminEditBook = () => {
     return <div className="text-center py-12">You are not authorized to view this page.</div>;
   }
 
+  if (loading) {
+    return <LoadingSpinner text="Loading book..." />;
+  }
+  
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
   const handleFileChange = (e) => setCoverFile(e.target.files?.[0] || null);
 
