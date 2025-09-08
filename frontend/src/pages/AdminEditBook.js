@@ -23,10 +23,7 @@ const AdminEditBook = () => {
   const [, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-  if (!user || user.role !== 'admin') return;
-  fetchBook();
-}, [user, fetchBook]);
+ 
 
   const fetchBook = useCallback(async () => {
   try {
@@ -49,6 +46,11 @@ const AdminEditBook = () => {
     setLoading(false);
   }
 }, [id, navigate]);
+
+ useEffect(() => {
+  if (!user || user.role !== 'admin') return;
+  fetchBook();
+}, [user, fetchBook]);
 
   if (!user || user.role !== 'admin') {
     return <div className="text-center py-12">You are not authorized to view this page.</div>;
@@ -73,7 +75,7 @@ const AdminEditBook = () => {
       };
 
       const res = await axios.put(`/api/books/${id}`, payload);
-      // const updated = res.data.book;
+       const updated = res.data.book;
 
       if (coverFile) {
         try {

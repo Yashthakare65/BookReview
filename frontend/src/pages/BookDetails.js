@@ -32,9 +32,7 @@ const BookDetails = () => {
   });
   const [editingReview, setEditingReview] = useState(null);
 
-   useEffect(() => {
-    fetchBookDetails();
-  }, [id]);
+   
 
     const fetchBookDetails = useCallback(async () => {
   try {
@@ -49,7 +47,8 @@ const BookDetails = () => {
   } finally {
     setLoading(false);
   }
-}, [id, navigate, toast]);
+}, [id, navigate]);
+
 
 useEffect(() => {
   fetchBookDetails();
