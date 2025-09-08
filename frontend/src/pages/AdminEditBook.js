@@ -4,8 +4,6 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useAuth } from '../contexts/AuthContext';
 
-
-
 const AdminEditBook = () => {
   const { id } = useParams();
   const { user } = useAuth();
@@ -20,43 +18,40 @@ const AdminEditBook = () => {
     imageUrl: ''
   });
   const [coverFile, setCoverFile] = useState(null);
+  // we only need the setter; the value isn't rendered anywhere
   const [, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
- 
-
   const fetchBook = useCallback(async () => {
-  try {
-    setLoading(true);
-    const res = await axios.get(`/api/books/${id}`);
-    const b = res.data.book;
-    setForm({
-      title: b.title || '',
-      author: b.author || '',
-      description: b.description || '',
-      genre: b.genre || '',
-      publishedYear: b.publishedYear || '',
-      imageUrl: b.imageUrl || ''
-    });
-  } catch (err) {
-    console.error('Fetch book for edit failed:', err);
-    toast.error('Failed to load book');
-    navigate('/books');
-  } finally {
-    setLoading(false);
-  }
-}, [id, navigate]);
+    try {
+      setLoading(true);
+      const res = await axios.get(`/api/books/${id}`);
+      const b = res.data.book;
+      setForm({
+        title: b.title || '',
+        author: b.author || '',
+        description: b.description || '',
+        genre: b.genre || '',
+        publishedYear: b.publishedYear || '',
+        imageUrl: b.imageUrl || ''
+      });
+    } catch (err) {
+      console.error('Fetch book for edit failed:', err);
+      toast.error('Failed to load book');
+      navigate('/books');
+    } finally {
+      setLoading(false);
+    }
+  }, [id, navigate]);
 
- useEffect(() => {
-  if (!user || user.role !== 'admin') return;
-  fetchBook();
-}, [user, fetchBook]);
+  useEffect(() => {
+    if (!user || user.role !== 'admin') return;
+    fetchBook();
+  }, [user, fetchBook]);
 
   if (!user || user.role !== 'admin') {
     return <div className="text-center py-12">You are not authorized to view this page.</div>;
   }
-
-  
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
   const handleFileChange = (e) => setCoverFile(e.target.files?.[0] || null);
@@ -74,8 +69,8 @@ const AdminEditBook = () => {
         imageUrl: form.imageUrl || undefined
       };
 
-      const res = await axios.put(`/api/books/${id}`, payload);
-       const updated = res.data.book;
+      // we don't need the response object; avoiding an unused var
+      await axios.put(`/api/books/${id}`, payload);
 
       if (coverFile) {
         try {
