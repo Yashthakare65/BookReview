@@ -1,4 +1,4 @@
-import { useState, useEffect ,useCallback} from 'react';
+import { useState, useEffect,useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -36,24 +36,24 @@ const BookDetails = () => {
     fetchBookDetails();
   }, [id]);
 
-   const fetchBookDetails = async () => {
-    try {
-      setLoading(true);
-  const response = await axios.get(`/api/books/${id}`);
-      setBook(response.data.book);
-      setReviews(response.data.reviews);
-    } catch (error) {
-      console.error('Error fetching book details:', error);
-      toast.error('Failed to fetch book details');
-      navigate('/books');
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchBookDetails = useCallback(async () => {
+  try {
+    setLoading(true);
+    const response = await axios.get(`/api/books/${id}`);
+    setBook(response.data.book);
+    setReviews(response.data.reviews);
+  } catch (error) {
+    console.error('Error fetching book details:', error);
+    toast.error('Failed to fetch book details');
+    navigate('/books');
+  } finally {
+    setLoading(false);
+  }
+}, [id, navigate, toast]);
 
-  // useEffect(() => {
-  //   fetchBookDetails();
-  // }, [id, navigate, toast]);
+useEffect(() => {
+  fetchBookDetails();
+}, [fetchBookDetails]);
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -20,35 +20,35 @@ const AdminEditBook = () => {
     imageUrl: ''
   });
   const [coverFile, setCoverFile] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (!user || user.role !== 'admin') return;
-    fetchBook();
-  }, [id, user]);
+  if (!user || user.role !== 'admin') return;
+  fetchBook();
+}, [user, fetchBook]);
 
-  const fetchBook = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get(`/api/books/${id}`);
-      const b = res.data.book;
-      setForm({
-        title: b.title || '',
-        author: b.author || '',
-        description: b.description || '',
-        genre: b.genre || '',
-        publishedYear: b.publishedYear || '',
-        imageUrl: b.imageUrl || ''
-      });
-    } catch (err) {
-      console.error('Fetch book for edit failed:', err);
-      toast.error('Failed to load book');
-      navigate('/books');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchBook = useCallback(async () => {
+  try {
+    setLoading(true);
+    const res = await axios.get(`/api/books/${id}`);
+    const b = res.data.book;
+    setForm({
+      title: b.title || '',
+      author: b.author || '',
+      description: b.description || '',
+      genre: b.genre || '',
+      publishedYear: b.publishedYear || '',
+      imageUrl: b.imageUrl || ''
+    });
+  } catch (err) {
+    console.error('Fetch book for edit failed:', err);
+    toast.error('Failed to load book');
+    navigate('/books');
+  } finally {
+    setLoading(false);
+  }
+}, [id, navigate]);
 
   if (!user || user.role !== 'admin') {
     return <div className="text-center py-12">You are not authorized to view this page.</div>;
@@ -73,7 +73,7 @@ const AdminEditBook = () => {
       };
 
       const res = await axios.put(`/api/books/${id}`, payload);
-      const updated = res.data.book;
+      // const updated = res.data.book;
 
       if (coverFile) {
         try {
